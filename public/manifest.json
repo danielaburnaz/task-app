@@ -1,0 +1,10 @@
+{
+  "name": "Task Management App",
+  "short_name": "Tasks",
+  "description": "A Vue.js task management application",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary"
+}
