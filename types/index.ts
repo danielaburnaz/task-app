@@ -1,5 +1,5 @@
-export type TaskStatus = 'pending' | 'in-progress' | 'completed'
-export type RequestStatus = 'open' | 'in-review' | 'approved' | 'rejected'
+export type TaskStatus = 'open' | 'in-progress' | 'completed' | 'expired'
+export type RequestStatus = 'open' | 'in-review' | 'expired'
 export type Priority = 'low' | 'medium' | 'high'
 export type Reward = 'low' | 'medium' | 'high'
 

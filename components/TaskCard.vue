@@ -63,10 +63,10 @@ const formattedStatus = computed(() => {
 const statusColor = computed(() => {
   const status = props.item.status
 
-  if (status === 'completed' || status === 'approved') return 'success'
+  if (status === 'completed') return 'success'
   if (status === 'in-progress' || status === 'in-review') return 'info'
-  if (status === 'pending' || status === 'open') return 'warning'
-  if (status === 'rejected') return 'error'
+  if (status === 'open') return 'warning'
+  if (status === 'expired') return 'error'
 
   return 'neutral'
 })

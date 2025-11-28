@@ -1,4 +1,10 @@
-import type { Task, Request } from "../types/index";
+import type { Task, Request, Priority, Reward } from "../types/index";
+
+export interface Filters {
+  priority: Priority[]
+  status: string[]
+  reward: Reward[]
+}
 
 export const useTasks = () => {
   const tasks = ref<Task[]>([
@@ -6,7 +12,7 @@ export const useTasks = () => {
       id: "1",
       title: "Walk my dog",
       description: "Take the dog for a 30-minute walk around the neighborhood",
-      status: "pending",
+      status: "expired",
       priority: "medium",
       reward: "low",
       createdAt: "2025-11-28T10:00:00Z",
@@ -18,7 +24,7 @@ export const useTasks = () => {
       title: "Teach me yoga",
       description:
         "Provide a beginner-friendly 20-minute yoga session focused on flexibility and breathing",
-      status: "pending",
+      status: "open",
       priority: "high",
       reward: "medium",
       createdAt: "2025-11-28T10:10:00Z",
@@ -42,7 +48,7 @@ export const useTasks = () => {
       title: "Clean the kitchen",
       description:
         "Wash dishes, wipe countertops, clean the stove, and take out the trash",
-      status: "pending",
+      status: "open",
       priority: "low",
       reward: "low",
       createdAt: "2025-11-28T11:25:00Z",
@@ -54,7 +60,7 @@ export const useTasks = () => {
       title: "Plan weekly meals",
       description:
         "Create a simple meal plan for the week including breakfast, lunch, and dinner",
-      status: "pending",
+      status: "open",
       priority: "medium",
       reward: "medium",
       createdAt: "2025-11-28T12:00:00Z",
@@ -92,7 +98,7 @@ export const useTasks = () => {
       id: "r3",
       title: "Export to PDF feature",
       description: "Allow users to export their reports and data to PDF format",
-      status: "approved",
+      status: "open",
       priority: "medium",
       reward: "medium",
       createdAt: "2025-11-18T13:00:00Z",
@@ -103,7 +109,7 @@ export const useTasks = () => {
       id: "r4",
       title: "Integration with Slack",
       description: "Add Slack integration for notifications and updates",
-      status: "rejected",
+      status: "expired",
       priority: "low",
       reward: "low",
       createdAt: "2025-11-15T11:00:00Z",
@@ -124,8 +130,55 @@ export const useTasks = () => {
     },
   ]);
 
+  const searchQuery = ref('')
+  const filters = ref<Filters>({
+    priority: [],
+    status: [],
+    reward: []
+  })
+
+  const filterItems = <T extends Task | Request>(items: T[]): T[] => {
+    let filtered = [...items]
+
+    if (searchQuery.value) {
+      const query = searchQuery.value.toLowerCase()
+      filtered = filtered.filter(item =>
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query) ||
+        (item.requester && item.requester.toLowerCase().includes(query))
+      )
+    }
+
+    if (filters.value.priority.length > 0) {
+      filtered = filtered.filter(item =>
+        filters.value.priority.includes(item.priority)
+      )
+    }
+
+    if (filters.value.status.length > 0) {
+      filtered = filtered.filter(item =>
+        filters.value.status.includes(item.status)
+      )
+    }
+
+    if (filters.value.reward.length > 0) {
+      filtered = filtered.filter(item =>
+        filters.value.reward.includes(item.reward)
+      )
+    }
+
+    return filtered
+  }
+
+  const filteredTasks = computed(() => filterItems(tasks.value))
+  const filteredRequests = computed(() => filterItems(requests.value))
+
   return {
     tasks: readonly(tasks),
     requests: readonly(requests),
+    filteredTasks: readonly(filteredTasks),
+    filteredRequests: readonly(filteredRequests),
+    searchQuery,
+    filters,
   };
 };
